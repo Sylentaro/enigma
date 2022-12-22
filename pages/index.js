@@ -5,6 +5,7 @@ import styles from '../styles/Home.module.css'
 // import prisma from '../lib/prisma.js'
 import { PrismaClient } from '@prisma/client'
 import { useEffect, useState } from 'react'
+import { Text } from '@mantine/core'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -45,7 +46,10 @@ export default function Home({allUsers}) {
           </p>
           <ul>
             {allUsers.map((item) => (
-              <li key={item.id}>{item.name}</li>
+              <>
+                <Text>{item.name} to {item.id} uczestnik</Text>
+                
+              </>
             ))}
           </ul>
           <p>
