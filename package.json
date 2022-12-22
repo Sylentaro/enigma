@@ -9,9 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.4.3",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mantine/core": "^5.9.4",
+    "@mantine/hooks": "^5.9.4",
     "@next/font": "13.0.7",
+    "@prisma/client": "^4.7.1",
+    "dotenv": "^16.0.3",
     "next": "13.0.7",
+    "pg": "^8.8.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "prisma": "^4.7.1"
   }
 }
