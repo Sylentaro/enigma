@@ -2,10 +2,33 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '../styles/Home.module.css'
+// import prisma from '../lib/prisma.js'
+import { PrismaClient } from '@prisma/client'
+import { useEffect, useState } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+export const getStaticProps = async () => {
+  const prisma = new PrismaClient()
+  const data = await prisma.user.findMany(
+  //   {
+  //   where: { published: true },
+  //   include: {
+  //     author: {
+  //       select: { name: true },
+  //     },
+  //   },
+  // }
+  );
+  return {
+    props: { allUsers: data }
+  };
+};
+
+export default function Home({allUsers}) {
+
+  const [users, setUsers] = useState([])
+
   return (
     <>
       <Head>
@@ -16,6 +39,15 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <div className={styles.description}>
+          <p>
+            Get started by editing&nbsp;
+            <code className={styles.code}>pages/index.js</code>
+          </p>
+          <ul>
+            {allUsers.map((item) => (
+              <li key={item.id}>{item.name}</li>
+            ))}
+          </ul>
           <p>
             Get started by editing&nbsp;
             <code className={styles.code}>pages/index.js</code>
