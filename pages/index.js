@@ -8,9 +8,10 @@ import { useEffect, useState } from 'react'
 import { Text } from '@mantine/core'
 
 const inter = Inter({ subsets: ['latin'] })
+const prisma = new PrismaClient()
 
 export const getStaticProps = async () => {
-  const prisma = new PrismaClient()
+  // const prisma = new PrismaClient()
   const data = await prisma.user.findMany(
   //   {
   //   where: { published: true },
@@ -47,8 +48,7 @@ export default function Home({allUsers}) {
           <ul>
             {allUsers.map((item) => (
               <>
-                <Text>{item.name} to {item.id} uczestnik</Text>
-                
+                <Text key={item.id}>{item.name} to {item.id} uczestnik</Text>
               </>
             ))}
           </ul>
