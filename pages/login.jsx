@@ -1,4 +1,6 @@
-import { useState } from "react"
+import { Box,  Group, TextInput, Button, Stack, Checkbox } from "@mantine/core"
+import { useForm } from "@mantine/form"
+import Cookies from "js-cookie"
 
 const getStaticProps = async () => {
     
@@ -7,37 +9,67 @@ const getStaticProps = async () => {
     }
 }
 
-async function handleSubmit() { 
-  await fetch("/api/login")
+const LoginForm = () => {
+  const form = useForm({
+      initialValues: {
+      name: '',
+      password: "",
+      email: '',
+      remember: false
+    },
+    validate: {
+      name: (value) => (value.length < 2 ? 'Name must have at least two letters' : null),
+      password: (value) => (value.length < 6 ? 'Password must have at least six characters' : null),
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email')
+    },
+  })
+
+  async function login(values) {
+    const response = await fetch("/api/login", 
+    {
+      method: "POST",
+      body: JSON.stringify(values)
+    })
+    // await Cookies.set('authToken', 'test', {expires: 2/24})
+    // console.log(Cookies.get('authToken'))
+    if (response.ok) {
+      form.setValues({
+        name: "",
+        password: "",
+        email: "",
+        remember: false
+      })
+    }
+    else {
+      alert("login error has occured")
+    }
+    return await response.json()
+  }
+
+  return (
+    <form onSubmit={form.onSubmit(login)}>
+      {/* <Stack align="flex-start" spacing="xs"> */}
+        <TextInput size="md" w="300px" label="Name" placeholder="Name" {...form.getInputProps('name')} />
+        <TextInput size="md" w="300px" type="password" mt="sm" label="Password" placeholder="Password" {...form.getInputProps('password')} />
+        <TextInput size="md" w="300px" mt="sm" label="Email" placeholder="Email"
+          {...form.getInputProps('email')}
+        />
+        <Checkbox mt="sm" sx={{userSelect: 'none'}} label="Remember me" {...form.getInputProps('remember')}/>
+        <Button sx={{userSelect: 'none'}} ml="75px" w="50%" type="submit" mt="sm">
+          Log in
+        </Button>
+      {/* </Stack> */}
+    </form>
+  )
 }
 
-const LoginForm = () => {
-
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
-
-    
+export const LoginPage = () => {
     return (
-        <form onSubmit={handleSubmit}>
-          {/* {error && <p>{error}</p>} */}
-          <label htmlFor="username">Nazwa użytkownika:</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-          <br />
-          <label htmlFor="password"> Hasło:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-          <br />
-          <button type="submit">Zaloguj</button>
-        </form>
+        <Box p="xl" bg="gray.8" w="100vw" h="100vh">
+          <Group align="flex-start" position="center">
+            <LoginForm/>
+          </Group>
+        </Box>
       )
 }
-export default LoginForm
+export default LoginPage
