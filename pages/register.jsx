@@ -21,11 +21,16 @@ const RegisterForm = () => {
             body: JSON.stringify(values)
         })
 
-        form.setValues({
-            name: '',
-            password: "",
-            email: '',
-        })
+        if (response.ok) {
+            form.setValues({
+                name: '',
+                password: "",
+                email: '',
+            })
+        }
+        else {
+            alert("error has occured during register")
+        }
         // if (!response.ok) {
         //     throw new Error(response.statusText)
         // }

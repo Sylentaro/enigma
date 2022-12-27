@@ -39,6 +39,7 @@ const LoginForm = () => {
         email: "",
         remember: false
       })
+      location.replace("/")
     }
     else {
       alert("login error has occured")
