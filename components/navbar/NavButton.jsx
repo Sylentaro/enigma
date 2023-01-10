@@ -1,18 +1,18 @@
 import { Tooltip, Button, ActionIcon } from '@mantine/core';
 import { IconSettings } from '@tabler/icons';
 
-export const NavButton = ({Icon, tooltip}) => {
+export const NavButton = ({icon, tooltip}) => {
   return (
     <Tooltip label={tooltip}>
       <ActionIcon color="blue" size="xl" radius="md" variant='light'>
-        <div>{Icon}</div>
+        <div>{icon}</div>
       </ActionIcon>
     </Tooltip>
   );
 }
 
 NavButton.defaultProps = {
-  Icon: [<IconSettings size="22"/>],
+  icon: [<IconSettings size="22"/>],
   tooltip: "Tooltip"
 }
 

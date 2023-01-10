@@ -38,14 +38,12 @@ const LoginForm = () => {
       //   remember: false
       // })
       // location.replace("/")
-      const authToken = await response.json()
-      await localStorage.setItem("authToken", authToken)
       router.push("/hub")
     }
     else {
       alert("login error has occured")
     }
-    // return await response.json()
+    return await response.json()
   }
 
   return (

@@ -9,9 +9,9 @@ export const CustomNavbar = () => {
 
     return (
 
-        <Navbar p="sm" bg="gray.9" w="6vw" sx={{position: "fixed", top: "0", right: "0"}}>
+        <Navbar p="sm" bg="gray.9" w="100px" sx={{position: "fixed", top: "0", right: "0"}}>
             <Center>
-                <NavButton Icon={[<IconHome2 size="22"/>]} tooltip="Strona Główna"/>
+                <NavButton icon={[<IconHome2 size="22"/>]} tooltip="Strona Główna"/>
             </Center>
             <Navbar.Section mt="lg">
                 <Stack spacing="4px" align="center">

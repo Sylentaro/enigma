@@ -5,9 +5,9 @@ import { ChakraProvider } from '@chakra-ui/react'
 export default function App({ Component, pageProps }) {
   return (
     <ChakraProvider>
-    <MantineProvider theme={{colorScheme: 'dark'}}>
-      <Component {...pageProps} />
-    </MantineProvider>
+      <MantineProvider theme={{colorScheme: 'dark'}}>
+        <Component {...pageProps} />
+      </MantineProvider>
     </ChakraProvider>
   )
 }

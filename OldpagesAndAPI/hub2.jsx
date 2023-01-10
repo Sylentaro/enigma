@@ -6,36 +6,47 @@ import Background from "../components/Background";
 // import cookie from "js-cookie";
 // import { Cookies } from "cookies-next"
 import jwt from 'jwt-simple'
-import { useEffect, useState } from "react";
 
-export const UserHubPage = () => {
-    
-    const [user, setUser] = useState(null)
+
+export async function getServerSideProps({req, res}) {
+    // const authToken = getCookie('authToken', {req, res})
+    const authToken = req.cookies.authToken
+    var user = {}
+    if (authToken) {
+        const decodedToken = jwt.decode(authToken, "my-secret")
+        user = {id: decodedToken.id, name: decodedToken.name}
+    }
+    else {
+        // user = {id: "id not found", name: "name not found"}
+        user = null
+    }
+
+    return {
+        props: {user,}
+    }
+}
+
+export const UserHubPage = ({user}) => {
     
     const router = useRouter()
 
     async function handleLogout() {
-        await localStorage.removeItem("authToken")
-        router.push('/login', undefined, {shallow: false})
-        // location.href = "/hub"
-        // location.assign("/hub")
-        // location.reload()
-        // router.reload()
-            
-        // await router.push('/', undefined, {shallow: false})
-        // router.push('/hub', undefined, {shallow: false})
-    }
-
-    useEffect(() => {
-        const authToken = localStorage.getItem("authToken")
-        if (authToken) {
-            const decodedToken = jwt.decode(authToken, "my-secret")
-            setUser({id: decodedToken.id, name: decodedToken.name})
+        const res = await fetch("/api/logout", {method: "POST"})
+        if (!res.ok) {
+            alert("error has occured: res not ok")
         }
         else {
-            setUser(null)
+            router.push('/login', undefined, {shallow: false})
+            // location.href = "/hub"
+            // location.assign("/hub")
+            // location.reload()
+            // router.reload()
+            
+            // await router.push('/', undefined, {shallow: false})
+            // router.push('/hub', undefined, {shallow: false})
         }
-    }, [])
+        return await res.json();
+    }
 
     return (
         <>

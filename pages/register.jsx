@@ -1,7 +1,11 @@
 import { TextInput, Button, Group, Box, Stack, Checkbox} from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useRouter } from 'next/router';
+import Background from "../components/Background";
 
 const RegisterForm = () => {
+    const router = useRouter()
+
     const form = useForm({
         initialValues: {
             name: '',
@@ -22,11 +26,13 @@ const RegisterForm = () => {
         })
 
         if (response.ok) {
-            form.setValues({
-                name: '',
-                password: "",
-                email: '',
-            })
+            // form.setValues({
+            //     name: '',
+            //     password: "",
+            //     email: '',
+            // })
+            alert("account created, now login with your credentials!")
+            router.push("/login")
         }
         else {
             alert("error has occured during register")
@@ -53,11 +59,11 @@ const RegisterForm = () => {
 
 export const RegisterPage = () => {
     return (
-        <Box bg='gray.8' w="100vw" h="100vh" p="xl">
+        <Background>
             <Group position='center'>
                 <RegisterForm/>
             </Group>
-        </Box>
+        </Background>
     )
 }
 
