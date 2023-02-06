@@ -12,7 +12,7 @@ export const NavButton = ({icon, tooltip}) => {
 }
 
 NavButton.defaultProps = {
-  icon: [<IconSettings size="22"/>],
+  icon: <IconSettings size="22"/>,
   tooltip: "Tooltip"
 }
 

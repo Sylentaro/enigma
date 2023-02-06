@@ -1,4 +1,4 @@
-import { Box, Text, Group, Button, Stack, Flex } from "@mantine/core"
+import { Box, Text, Group, Button, Stack, Flex, LoadingOverlay } from "@mantine/core"
 import { useRouter } from "next/router";
 import Link from "next/link";
 import CustomNavbar from "../components/navbar/CustomNavbar";
@@ -11,9 +11,10 @@ import { useEffect, useState } from "react";
 export const UserHubPage = () => {
     
     const [user, setUser] = useState(null)
+    const [loading, setLoading] = useState(true)
     
     const router = useRouter()
-
+    
     async function handleLogout() {
         await localStorage.removeItem("authToken")
         router.push('/login', undefined, {shallow: false})
@@ -25,39 +26,35 @@ export const UserHubPage = () => {
         // await router.push('/', undefined, {shallow: false})
         // router.push('/hub', undefined, {shallow: false})
     }
-
     useEffect(() => {
         const authToken = localStorage.getItem("authToken")
         if (authToken) {
-            const decodedToken = jwt.decode(authToken, "my-secret")
-            setUser({id: decodedToken.id, name: decodedToken.name})
+            const decodedUser = jwt.decode(authToken, "my-secret")
+            // setUser({id: decodedUser.id, name: decodedUser.name})
+            setUser(decodedUser)
+            setLoading(false)
         }
         else {
             setUser(null)
+            // setLoading(false)
+            router.push('/unauthorized', undefined, {shallow: false})
         }
     }, [])
 
     return (
-        <>
-        {user ? 
-        (
         <Background>
-            <CustomNavbar/>
-                <Group ml="100px">
-                    <Text color="white">Welcome: {user.name}, {user.id}</Text>
-                    <Button radius="lg" onClick={handleLogout}>Log out</Button>
-                    {/* <Link href="/hub">refresh</Link>
-                    <Link href="/" shallow={false}>home</Link> */}
-                    <div></div>
-            </Group>
-        </Background>) : 
+        <LoadingOverlay visible={loading} overlayBlur={2}/>
+        <CustomNavbar overlay={loading}/>
+        {!loading && 
         (
-        <Background>
-            <Text color="white">You must be logged in to see contents of this page!</Text>
+            <Group ml="100px">
+                <Text>Welcome: {user.name}, {user.id}</Text>
+                <Button radius="lg" variant="light" onClick={handleLogout}>Log out</Button>
+                {/* <Link href="/hub">refresh</Link>
+                <Link href="/" shallow={false}>home</Link> */}
+            </Group>  
+        )} 
         </Background>
-        )
-        }
-        </>
     )
 }
 

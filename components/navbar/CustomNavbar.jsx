@@ -5,23 +5,22 @@ import NavButton from './NavButton';
 import { Icon24Hours } from '@tabler/icons';
 import { IconHome2 } from '@tabler/icons'; 
 
-export const CustomNavbar = () => {
-
+export const CustomNavbar = ({overlay}) => {
+    // const [visible, setVisible] = useState(overlay)
     return (
-
-        <Navbar p="sm" bg="gray.9" w="100px" sx={{position: "fixed", top: "0", right: "0"}}>
+      <Navbar p="sm" bg="gray.9" w="100px" sx={{position: "fixed", top: "0", right: "0"}}>
+            {overlay && <Overlay opacity={0.6} color='#000' zIndex={5}/>}
             <Center>
-                <NavButton icon={[<IconHome2 size="22"/>]} tooltip="Strona Główna"/>
+                <NavButton icon={<IconHome2 size="22"/>} tooltip="Strona Główna"/>
             </Center>
             <Navbar.Section mt="lg">
-                <Stack spacing="4px" align="center">
-                    <NavButton/>
+                <Stack spacing="8px" align="center">
+                    <NavButton icon={<Icon24Hours size="22"/>}/>
                     <NavButton/>
                     <NavButton/>
                 </Stack>
             </Navbar.Section>
-        </Navbar>
-      
+        </Navbar>    
     )
 }
 

@@ -1,9 +1,7 @@
-import cookie from "cookie"
-import { NextApiRequest, NextApiResponse} from "next"
-import { PrismaClient } from "@prisma/client"
+import prisma from '../../prisma/client'
 import jwt from 'jwt-simple'
 
-const prisma = new PrismaClient()
+// const prisma = new PrismaClient()
 
 export default async function loginCheck(req, res) {
   if (req.method !== "POST") {
@@ -21,7 +19,7 @@ export default async function loginCheck(req, res) {
   })
 
   if (accountFound) {
-    const token = jwt.encode({id: accountFound.id, name: accountFound.name}, 'my-secret')
+    const token = jwt.encode(accountFound, 'my-secret')
     return res.status(200).json(token)
   }
 

@@ -8,8 +8,18 @@ datasource db {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  name    String?  @db.VarChar(255)
-  password    String?  @db.VarChar(255)
-  email   String   @unique @db.VarChar(255)
+  id       Int     @id @default(autoincrement())
+  name     String? @db.VarChar(255)
+  password String? @db.VarChar(255)
+  email    String  @unique @db.VarChar(255)
+  Stamp    Stamp[]
+}
+
+model Stamp {
+  id        Int      @id @default(autoincrement())
+  title     String   @db.VarChar(255)
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  content   String?
+  authorId  Int
+  User      User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

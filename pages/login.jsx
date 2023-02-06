@@ -1,11 +1,25 @@
-import { Box,  Group, TextInput, Button, Stack, Checkbox } from "@mantine/core"
+import { useEffect, useState } from "react"
+import { Box,  Group, TextInput, Button, Stack, Checkbox, LoadingOverlay, Text, Flex } from "@mantine/core"
 import { useForm } from "@mantine/form"
 import Cookies from "js-cookie"
 import { useRouter } from "next/router"
+import Link from "next/link"
 import Background from "../components/Background"
+
 
 const LoginForm = () => {
   const router = useRouter()
+  const [visible, setVisible] = useState(true)
+
+  useEffect(() => {
+    const authToken = localStorage.getItem("authToken")
+    if (authToken) {
+      router.push("/hub")
+    }
+    else {
+      setVisible(false)
+    }
+  }, [router])
 
   const form = useForm({
     initialValues: {
@@ -22,7 +36,7 @@ const LoginForm = () => {
   })
 
   async function login(values) {
-    
+    setVisible(true)
     const response = await fetch("/api/login", 
     {
       method: "POST",
@@ -31,41 +45,56 @@ const LoginForm = () => {
     // await Cookies.set('authToken', 'test', {expires: 2/24})
     // console.log(Cookies.get('authToken'))
     if (response.ok) {
-      // form.setValues({
-      //   name: "",
-      //   password: "",
-      //   email: "",
-      //   remember: false
-      // })
-      // location.replace("/")
       const authToken = await response.json()
       await localStorage.setItem("authToken", authToken)
       router.push("/hub")
     }
     else {
+      setVisible(false)
       alert("login error has occured")
     }
     // return await response.json()
   }
 
   return (
-    <form onSubmit={form.onSubmit(login)}>
+    // <div style={{ width: 400, position: 'relative' }}>
+      // <LoadingOverlay visible={visible} overlayBlur={2} />
+      <form onSubmit={form.onSubmit(login)}>
+        <LoadingOverlay visible={visible} overlayBlur={2} />
       {/* <Stack align="flex-start" spacing="xs"> */}
+        
         <TextInput size="md" w="300px" label="Name" placeholder="Name" {...form.getInputProps('name')} />
         <TextInput size="md" w="300px" type="password" mt="sm" label="Password" placeholder="Password" {...form.getInputProps('password')} />
         <TextInput size="md" w="300px" mt="sm" label="Email" placeholder="Email"
-          {...form.getInputProps('email')}
+        {...form.getInputProps('email')}
         />
-        <Checkbox mt="sm" sx={{userSelect: 'none'}} label="Remember me" {...form.getInputProps('remember')}/>
+        {/* <Checkbox mt="sm" sx={{userSelect: 'none'}} label="Remember me" {...form.getInputProps('remember')}/> */}
         <Button sx={{userSelect: 'none'}} ml="75px" w="50%" type="submit" mt="sm">
           Log in
         </Button>
+        <Link href="/register" >
+          <Text color="blue.8" variant="link" mt="sm" size="15px">
+            {'Not registered? Create account now!'}
+          </Text>
+        </Link>
+        
       {/* </Stack> */}
-    </form>
+      </form>
+    // </div>
   )
 }
 
 export const LoginPage = () => {
+  // const router = useRouter()
+  // useEffect(() => {
+  //   const authToken = localStorage.getItem("authToken")
+  //   if (authToken) {
+  //     router.push("/hub")
+  //   }
+  //   else {
+
+  //   }
+  // }, [])
     return (
         <Background>
           <Group align="flex-start" position="center">
