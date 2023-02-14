@@ -44,7 +44,7 @@ export const UserHubPage = () => {
     return (
         <Background>
         <LoadingOverlay visible={loading} overlayBlur={2}/>
-        <CustomNavbar overlay={loading}/>
+        <CustomNavbar overlay={false}/>
         {!loading && 
         (
             <Group ml="100px">

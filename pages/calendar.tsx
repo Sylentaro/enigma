@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { Button, Divider, Group, MantineTheme, Stack, Box, LoadingOverlay } from '@mantine/core'
-import { Calendar } from '@mantine/dates';
+import React, { useState, useEffect } from 'react';
+import {Button, Divider, Group, MantineTheme, Stack, Box, LoadingOverlay, Indicator} from '@mantine/core'
+import { Calendar, DatePicker } from '@mantine/dates';
 import { Background } from "../components/Background"
 import { CustomNavbar } from "../components/navbar/CustomNavbar"
 import Toolbar from '../components/Toolbar';
@@ -14,8 +14,9 @@ import { useRouter } from 'next/router';
 interface Props {}
 export const CalendarPage: React.FC<Props> = () => {
     const [value, setValue] = useState<Date | null>(new Date());
-    const [currentDayStamps, setCurrentDayStamps] = useState<Stamp[]>([])
-    const [navOverlay, setNavOverlay] = useState<boolean>(true);
+    const [userStamps, setUserStamps] = useState<Stamp[]>([])
+    const [dateStamps, setDateStamps] = useState<Stamp[]>([])
+    const [navOverlay, setNavOverlay] = useState<boolean>(false);
     const [loading, setLoading] = useState(true)
     const [user, setUser] = useState<User>(null)
     const [openedViewModal, setOpenedViewModal] = useState(false)
@@ -23,7 +24,6 @@ export const CalendarPage: React.FC<Props> = () => {
     const router = useRouter()
 
     async function handleChangeCalendarValue(newDate: Date): Promise<any> {
-        console.log(newDate)
         setValue(newDate)
         // const dateSql: Date = new Date(`${newDate.getFullYear()}-${newDate.getMonth() + 1}-${newDate.getDate()}`)
         const dateUTC = new Date(Date.UTC(newDate.getFullYear(), newDate.getMonth(), newDate.getDate()))
@@ -34,7 +34,7 @@ export const CalendarPage: React.FC<Props> = () => {
         })})
         if (response.ok) {
             const fetchedStamps: Stamp[] = await response.json()
-            setCurrentDayStamps(fetchedStamps)
+            setDateStamps(fetchedStamps)
             setOpenedViewModal(true)
             setNavOverlay(true)
         }
@@ -42,14 +42,30 @@ export const CalendarPage: React.FC<Props> = () => {
             alert('error')
         }
     }
-
+    async function getAllUserStamps(user: User): Promise<any> {
+        //pobranie wszystkich stampów dla usera z parametru
+        //ustawienie stampów w useState 'UserStamps'
+        const response = await fetch('/api/stampGet', {method: 'POST', body: JSON.stringify(
+                {
+                    createdAt: 'ALL',
+                    authorId: user.id,
+                })
+        })
+        if (response.ok) {
+            setUserStamps(await response.json());
+            setLoading(false)
+            setNavOverlay(false)
+        }
+        else {
+            alert('error getting user stamps')
+        }
+    }
     useEffect(() => {
         const authToken = localStorage.getItem('authToken')
         if (authToken) {
             const decodedUser: User = jwt.decode(authToken, 'my-secret')
             setUser(decodedUser)
-            setLoading(false)
-            setNavOverlay(false)
+            getAllUserStamps(decodedUser)
         }
         else {
             router.push('/unauthorized')
@@ -64,9 +80,16 @@ export const CalendarPage: React.FC<Props> = () => {
                 <Group ml="100px" align='flex-start'>
                     <Divider orientation='vertical'/>
                     <Stack justify='flex-start' align='center'>
-                        <CreateStampModalButton user={user} handleNavOverlay={setNavOverlay}/>
-                        <ViewDateModal stamps={currentDayStamps} date={value} opened={openedViewModal} 
-                        handleNavOverlay={setNavOverlay} handleOpened={setOpenedViewModal}/>
+                        <CreateStampModalButton user={user} handleNavOverlay={setNavOverlay} handleGetAllUserStamps={getAllUserStamps}/>
+                        <ViewDateModal stamps={dateStamps}
+                                       user={user}
+                                       date={value}
+                                       opened={openedViewModal}
+                                       handleNavOverlay={setNavOverlay}
+                                       handleOpened={setOpenedViewModal}
+                                       setStamps={setDateStamps}
+                                       handleGetAllUserStamps={getAllUserStamps}
+                        />
                     </Stack>
                     <Divider orientation='vertical'/>
                     <Calendar 
@@ -91,7 +114,28 @@ export const CalendarPage: React.FC<Props> = () => {
                                     height: 70,
                                 },
                             }
-                        )} 
+                        )}
+                        renderDay={(date) => {
+                            let display: boolean
+                            userStamps.forEach((item) => {
+                                const itemDate = new Date(item.createdAt)
+                                if (itemDate.getFullYear() === date.getFullYear()) {
+                                    if (itemDate.getMonth() === date.getMonth()) {
+                                        if (itemDate.getDate() === date.getDate()) {
+                                            display = true
+                                        }
+                                    }
+                                }
+                                else {
+                                    display = false
+                                }
+                            })
+                            return (
+                                <Indicator size={8} color='red' offset={8} disabled={!display}>
+                                    <div>{date.getDate()}</div>
+                                </Indicator>
+                            )
+                        }}
                     />
                 </Group>
         </Background>

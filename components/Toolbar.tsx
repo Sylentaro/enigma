@@ -1,6 +1,6 @@
 import { MantineTheme, Title } from "@mantine/core"
 import { Box } from "@mantine/core"
-
+import { Accordion } from "@mantine/core"
 interface Props {
     title: String,
 }
@@ -18,9 +18,10 @@ export const Toolbar: React.FC<Props> = (props) => {
             )
         }
         } w='100vw' h='120px'>
-            <Title>
+            <Title sx={{userSelect: 'none'}}>
                 {props.title}
             </Title>
+
         </Box>
     )
 }

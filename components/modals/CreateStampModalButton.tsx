@@ -1,17 +1,19 @@
-import { Button, Input, Modal, TextInput } from '@mantine/core';
+import { Button, Input, Modal, TextInput, Stack } from '@mantine/core';
 import { useEffect, useState } from 'react'
-import { IconAt } from '@tabler/icons';
+import {IconAbc, IconAt, IconBallpen, IconCalendarEvent} from '@tabler/icons';
 import { useForm } from '@mantine/form';
 import jwt from 'jwt-simple'
-import { User, Stamp, StampData } from '../../tstypes/types'
+import { User, Stamp } from '../../tstypes/types'
 import styles from '../../styles/mystyles.module.css'
+import {DatePicker} from "@mantine/dates";
 
 interface Props {
     handleNavOverlay: Function
+    handleGetAllUserStamps: Function,
     user: User
 }
 
-export const CreateStampModalButton: React.FC<Props> = ({user, handleNavOverlay}) => {
+export const CreateStampModalButton: React.FC<Props> = ({user, handleNavOverlay, handleGetAllUserStamps}) => {
     // const [user, setUser] = useState<User>({
     //     id: null,
     //     name: null
@@ -22,20 +24,22 @@ export const CreateStampModalButton: React.FC<Props> = ({user, handleNavOverlay}
         initialValues: {
             title: '',
             content: '',
-            createdAt: new Date(Date.UTC(2023, 1, 4)),     
+            createdAt: undefined
+                // new Date(Date.UTC(2023, 1, 4)),
         },
         validate: {
             title: (value) => (value.length < 2 ? 'Title must have at least two letters' : null),
-            content: (value) => (value.length < 2 ? 'Content must have at least two letters' : null)
+            content: (value) => (value.length < 2 ? 'Content must have at least two letters' : null),
+            createdAt: (value) => (value === undefined ? 'Stamp must have a date' : null)
         }
     })
     type FormValues = typeof form.values
 
     async function createStamp(values: FormValues): Promise<any> {
-        const stampData: StampData = {
+        const stampData: Stamp = {
             title: values.title,
             content: values.content,
-            createdAt: values.createdAt,
+            createdAt: new Date(Date.UTC(values.createdAt.getFullYear(), values.createdAt.getMonth(), values.createdAt.getDate())),
             authorId: user.id
         }
         const response = await fetch('../../api/stampAdd', {
@@ -43,10 +47,17 @@ export const CreateStampModalButton: React.FC<Props> = ({user, handleNavOverlay}
             body: JSON.stringify(stampData)
         })
         if (response.ok) {
+            handleGetAllUserStamps(user);
             alert("stamp created!")
+            setOpened(false)
+            handleNavOverlay(false);
+            form.reset()
         }
         else {
             alert("error occured")
+            setOpened(false)
+            handleNavOverlay(false);
+            form.reset()
         }
         return await response.json()
     }
@@ -57,26 +68,43 @@ export const CreateStampModalButton: React.FC<Props> = ({user, handleNavOverlay}
 
     return (
         <>
-            <Modal opened={opened} onClose={() => {setOpened(false), handleNavOverlay(false), form.reset()}} title="Create new Stamp">
+            <Modal opened={opened} onClose={() => {setOpened(false); handleNavOverlay(false); form.reset()}} title="Create new Stamp">
                 <form onSubmit={form.onSubmit(createStamp)}>
-                    <TextInput
-                        icon={<IconAt size='22px'/>}
-                        placeholder='Stamp Name'
-                        {...form.getInputProps('title')}
-                    />
-                    <TextInput 
-                        icon={<IconAt size='22px'/>}
-                        placeholder='Stamp Content...'
-                        mt="lg"
-                        {...form.getInputProps('content')}
-                    />
-
-                    {/* <Input placeholder='Stamp content' mt='lg' {...form.getInputProps('content')}/> */}
-                
-                    <Button mt="md" variant='light' type='submit'>Submit</Button>
+                    <Stack spacing={'xs'} align='stretch'>
+                        <TextInput
+                            label='Name'
+                            icon={<IconBallpen size='22px'/>}
+                            placeholder='Stamp Name'
+                            {...form.getInputProps('title')}
+                        />
+                        <TextInput
+                            icon={<IconAbc size='22px'/>}
+                            label='Description'
+                            placeholder='Stamp Content...'
+                            {...form.getInputProps('content')}
+                        />
+                        {/* <Input placeholder='Stamp content' mt='lg' {...form.getInputProps('content')}/> */}
+                        <DatePicker icon={<IconCalendarEvent size='22px'/>} placeholder={'Pick date'} label='Stamp date' {...form.getInputProps('createdAt')}/>
+                        <Button mt="md" className={styles.ButtonStatic} variant='white' color='dark' type='submit'>Submit</Button>
+                    </Stack>
+                    {/*<TextInput*/}
+                    {/*    label='Name'*/}
+                    {/*    icon={<IconBallpen size='22px'/>}*/}
+                    {/*    placeholder='Stamp Name'*/}
+                    {/*    {...form.getInputProps('title')}*/}
+                    {/*/>*/}
+                    {/*<TextInput*/}
+                    {/*    label='Description'*/}
+                    {/*    icon={<IconAbc size='22px'/>}*/}
+                    {/*    placeholder='Stamp Content...'*/}
+                    {/*    {...form.getInputProps('content')}*/}
+                    {/*/>*/}
+                    {/*/!* <Input placeholder='Stamp content' mt='lg' {...form.getInputProps('content')}/> *!/*/}
+                    {/*<DatePicker icon={<IconCalendarEvent size='22px'/>} placeholder={'Pick date'} label='Stamp date' {...form.getInputProps('createdAt')}/>*/}
+                    {/*<Button mt="md" className={styles.ButtonStatic} variant='white' color='dark' type='submit'>Submit</Button>*/}
                 </form>
             </Modal>
-            <Button className={styles.btnstatic} variant='white' color='dark' onClick={() => {setOpened(true), handleNavOverlay(true)}}>Create Stamp</Button>
+            <Button className={styles.ButtonStatic} variant='white' color='dark' onClick={() => {setOpened(true); handleNavOverlay(true)}}>Create Stamp</Button>
         </>
     )
 }

@@ -16,9 +16,10 @@ export type User = {
 // export declare var User: UserConstructor
 
 export type Stamp = {
+    id?: number
     title: string,
     content: string,
-    createdAt: Date,
+    createdAt: Date | string,
     authorId: number
 }
 // export type Stamp = {
