@@ -12,7 +12,10 @@ model User {
   name     String? @db.VarChar(255)
   password String? @db.VarChar(255)
   email    String  @unique @db.VarChar(255)
-  Stamp    Stamp[]
+  stamps    Stamp[]
+  boards    Board[]
+  tasklists    TaskList[]
+  tasks    Task[]
 }
 
 model Stamp {
@@ -23,3 +26,33 @@ model Stamp {
   authorId  Int
   User      User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
+
+model Board {
+  id        Int      @id @default(autoincrement())
+  viewId    String  @unique @db.VarChar
+  title     String   @db.VarChar(255)
+  authorId  Int
+  User      User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  taskLists   TaskList[]
+}
+
+model TaskList {
+  id        Int      @id @default(autoincrement())
+  title     String @db.VarChar
+  tasks   Task[]
+  boardId  Int
+  Board      Board     @relation(fields: [boardId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  authorId  Int
+    User      User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Task {
+  id        Int      @id @default(autoincrement())
+  content   String    @db.VarChar(255)
+  status    Boolean
+  taskListId   Int
+  TaskList      TaskList     @relation(fields: [taskListId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  authorId  Int
+    User      User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+

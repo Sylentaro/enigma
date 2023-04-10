@@ -5,6 +5,7 @@ import Cookies from "js-cookie"
 import { useRouter } from "next/router"
 import Link from "next/link"
 import Background from "../components/Background"
+import {showNotification} from "@mantine/notifications";
 
 
 const LoginForm = () => {
@@ -51,7 +52,7 @@ const LoginForm = () => {
     }
     else {
       setVisible(false)
-      alert("login error has occured")
+        showNotification({title: 'Error', message: 'Login error has occurred'})
     }
     // return await response.json()
   }

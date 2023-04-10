@@ -7,6 +7,8 @@ import Background from "../components/Background";
 // import { Cookies } from "cookies-next"
 import jwt from 'jwt-simple'
 import { useEffect, useState } from "react";
+import Toolbar from "../components/toolbar/Toolbar";
+import { showNotification} from "@mantine/notifications";
 
 export const UserHubPage = () => {
     
@@ -17,7 +19,7 @@ export const UserHubPage = () => {
     
     async function handleLogout() {
         await localStorage.removeItem("authToken")
-        router.push('/login', undefined, {shallow: false})
+        await router.push('/login', undefined, {shallow: false})
         // location.href = "/hub"
         // location.assign("/hub")
         // location.reload()
@@ -44,6 +46,7 @@ export const UserHubPage = () => {
     return (
         <Background>
         <LoadingOverlay visible={loading} overlayBlur={2}/>
+        <Toolbar title={'Hub'}/>
         <CustomNavbar overlay={false}/>
         {!loading && 
         (

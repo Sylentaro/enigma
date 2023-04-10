@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '../../prisma/client'
-import {Stamp} from "../../tstypes/types";
+import prisma from '../../../prisma/client'
+import {Stamp} from "../../../tstypes/types";
 
 // const prisma = new PrismaClient()
 
@@ -14,7 +14,8 @@ export async function handler(req:NextApiRequest, res: NextApiResponse): Promise
             const stamps = await prisma.stamp.findMany({
                 where: {
                     authorId: stampData.authorId
-                }
+                },
+                orderBy: { id: 'asc' }
             })
             if (stamps) {
                 return res.status(200).json(stamps)

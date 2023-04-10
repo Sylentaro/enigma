@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Background from "../components/Background";
-
+import { showNotification} from "@mantine/notifications";
 const RegisterForm = () => {
     const router = useRouter()
     const [visible, setVisible] = useState(true)
@@ -44,12 +44,12 @@ const RegisterForm = () => {
             //     password: "",
             //     email: '',
             // })
-            alert("account created, now login with your credentials!")
-            router.push("/login")
+            showNotification({title: 'Success!', message: 'Account was created, now login with your credentials!'})
+            await router.push("/login")
         }
         else {
             setVisible(false)
-            alert("error has occured during register")
+            showNotification({title: 'Error', message: 'An error occurred in account creation'})
         }
         // if (!response.ok) {
         //     throw new Error(response.statusText)

@@ -1,11 +1,15 @@
-import { MantineTheme, Title } from "@mantine/core"
+import {ActionIcon, MantineTheme, Title} from "@mantine/core"
 import { Box } from "@mantine/core"
 import { Accordion } from "@mantine/core"
+import classes from '../../styles/mystyles.module.css'
+import {IconArrowLeft} from "@tabler/icons";
+import {useRouter} from "next/router";
 interface Props {
     title: String,
 }
 
 export const Toolbar: React.FC<Props> = (props) => {
+    const router = useRouter()
     return (
         <Box sx={(theme: MantineTheme) => {
             return (
@@ -21,7 +25,12 @@ export const Toolbar: React.FC<Props> = (props) => {
             <Title sx={{userSelect: 'none'}}>
                 {props.title}
             </Title>
-
+            <ActionIcon onClick={() => {
+                router.push('/boards')
+                {/*@ts-ignore*/}
+            }} className={classes.ButtonStatic} sx={{position: 'absolute', bottom: '10px', left: '10px'}} variant={'white'} color={'dark'}>
+                <IconArrowLeft/>
+            </ActionIcon>
         </Box>
     )
 }
