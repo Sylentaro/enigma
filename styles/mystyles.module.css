@@ -4,7 +4,30 @@
 .ButtonPointer:hover {
     cursor: pointer;
 }
+.UserSelectNone {
+    user-select: none;
+}
+.UserSelectNone * {
+    user-select: none;
+}
 
+.TableAddRow {
+    cursor: pointer;
+}
+
+.TableAddRow:hover {
+    background-color: #080f54;
+}
+
+/*.TableCollapseBorder {*/
+/*    border-collapse: collapse;*/
+/*}*/
+/*.TableCollapseBorder th {*/
+/*    border-collapse: collapse;*/
+/*}*/
+/*.TableCollapseBorder td {*/
+/*    border-collapse: collapse;*/
+/*}*/
 .customScroll::-webkit-scrollbar {
     width: 12px;
     height: 12px;

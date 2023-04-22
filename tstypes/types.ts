@@ -45,7 +45,13 @@ export type Stamp = {
     createdAt: Date | string,
     authorId: number
 }
-
+export type Subject = {
+    id?: number | string[],
+    title: string,
+    currentGrade: string,
+    wantedGrade: string,
+    completed: boolean
+}
 export type Board = {
     id?: number
     viewId?: string[] | string

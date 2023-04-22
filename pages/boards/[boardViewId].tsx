@@ -32,7 +32,7 @@ export const BoardViewPage: React.FC = () => {
         // setTasklists(copy)
         const response = await fetch('/api/tasklist/tasklistAdd', {method: 'POST', body: JSON.stringify(
                 {
-                    title: 'List name', boardId: board.id, authorId: user.id
+                    title: 'List name', boardId: board.viewId, authorId: user.id
                 })
         })
         if (response.ok) {
@@ -59,16 +59,25 @@ export const BoardViewPage: React.FC = () => {
         // tasklists.dispatch({type: 'test', body: {id: id, title: value, boardId: boardViewId}})
     }
     async function handleDeleteTasklist(id) {
-        const response = await fetch('/api/tasklist/tasklistDelete', {method: 'POST', body: JSON.stringify(
-                {
-                    id: id, title: 'we dont need title', authorId: user.id
-                })
-        })
-        if (response.ok) {
-            await getUserTasklists(user)
+        const responseTasks = await fetch('/api/task/taskDelete', {method: 'POST', body: JSON.stringify({
+                TYPE: 'ALL',
+                taskListId: id
+            })})
+        if (responseTasks.ok) {
+            const response = await fetch('/api/tasklist/tasklistDelete', {method: 'POST', body: JSON.stringify(
+                    {
+                        id: id, title: 'we dont need title', authorId: user.id
+                    })
+            })
+            if (response.ok) {
+                await getUserTasklists(user)
+            }
+            else {
+                showNotification({title: 'Error', message: 'An error has occurred during tasklist delete, try again'})
+            }
         }
         else {
-            showNotification({title: 'Error', message: 'An error has occurred during tasklist delete, try again'})
+            showNotification({title: 'Error', message: 'An error has occurred during tasks delete, try again'})
         }
         // tasklists.dispatch({type: 'delete', body: {id: id, title: 'we dont need title', boardId: boardViewId, authorId: user.id}})
     }
@@ -146,7 +155,7 @@ export const BoardViewPage: React.FC = () => {
                 {/*@ts-ignore*/}
                 <Toolbar title={board ? board.title : 'Board'}/>
                 <Group ml={'100px'} align={'flex-start'}>
-                    {board && tasklists.state.filter(item => item.boardId === board.id).map((item: Tasklist, index) => {
+                    {board && tasklists.state.filter(item => item.boardId === board.viewId).map((item: Tasklist, index) => {
                         return (<TasklistComponent key={v4()} user={user} idProp={item.id} title={item.title} handleGetUserTasks={getUserTasks} handleTitleChange={handleTitleTasklist} handleTasklistDelete={handleDeleteTasklist}/>)
                     })}
                     {board ? (
@@ -165,7 +174,12 @@ export const BoardViewPage: React.FC = () => {
     }
     else if (loading) {
         return (
-            <></>
+            <Background>
+                <CustomNavbar overlay={navOverlay}/>
+                <LoadingOverlay visible={loading}/>
+                {/*@ts-ignore*/}
+                <Toolbar title={'Board'}/>
+            </Background>
         )
     }
 }

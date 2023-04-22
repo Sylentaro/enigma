@@ -40,8 +40,8 @@ model TaskList {
   id        Int      @id @default(autoincrement())
   title     String @db.VarChar
   tasks   Task[]
-  boardId  Int
-  Board      Board     @relation(fields: [boardId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  boardId  String
+  Board      Board     @relation(fields: [boardId], references: [viewId], onDelete: NoAction, onUpdate: NoAction)
   authorId  Int
     User      User     @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

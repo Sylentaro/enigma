@@ -83,7 +83,8 @@ export const TasklistComponent: React.FC<Props> = ({user, idProp, title, handleT
     async function handleTaskDelete(id) {
         const response = await fetch('/api/task/taskDelete', {method: 'POST', body: JSON.stringify(
                 {
-                    id: id
+                    id: id,
+                    TYPE: 'SINGLE'
                 })
         })
         if (response.ok) {

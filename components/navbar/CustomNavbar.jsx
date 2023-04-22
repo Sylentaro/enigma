@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link'
 import { Button, Group, Box, Overlay, Stack, Navbar} from '@mantine/core';
 import NavButton from './NavButton';
-import {Icon24Hours, IconCalendar, IconChecklist} from '@tabler/icons';
+import {Icon24Hours, IconCalendar, IconChecklist, IconTable} from '@tabler/icons';
 import { IconHome2 } from '@tabler/icons'; 
 
 export const CustomNavbar = ({overlay}) => {
@@ -24,7 +24,9 @@ export const CustomNavbar = ({overlay}) => {
                     <Link href='/calendar'>
                         <NavButton icon={<IconCalendar size="22"/>} tooltip='Kalendarz'/>
                     </Link>
-                    <NavButton/>
+                    <Link href='/gradelist'>
+                        <NavButton icon={<IconTable size="22"/>} tooltip='Lista ocen'/>
+                    </Link>
                     <NavButton/>
                 </Stack>
             </Navbar.Section>
