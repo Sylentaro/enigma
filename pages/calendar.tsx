@@ -65,7 +65,7 @@ export const CalendarPage: React.FC<Props> = () => {
         }
     }
     useEffect(() => {
-        const authToken = localStorage.getItem('authToken')
+        const authToken: string = localStorage.getItem('authToken')
         if (authToken) {
             const decodedUser: User = jwt.decode(authToken, 'my-secret')
             setUser(decodedUser)

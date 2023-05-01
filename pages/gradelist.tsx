@@ -16,7 +16,16 @@ export const GradelistPage = () => {
     const inputRef = useRef<HTMLInputElement>(null)
     function handleAddSubject() {
         setSubjects([...subjects, {id: v4(), title: 'New Subject', currentGrade: 'None', wantedGrade: 'None', completed: false}])
-        handleInitialState()
+        setEditMode([...editMode, 'none'])
+        // handleInitialState()
+    }
+    function handleDeleteSubject(id) {
+        setSubjects(subjects.filter(item => item.id !== id))
+        // const copy = [...editMode]
+        // copy.pop()
+        // setEditMode(copy)
+        setEditMode(prev => prev.slice(0, -1));
+        // handleInitialState()
     }
     // const elements = [
     //     { position: 6, mass: 12.011, symbol: 'C', name: 'Carbon' },
@@ -29,8 +38,8 @@ export const GradelistPage = () => {
         const copy = []
         subjects.forEach((item) => {
             copy.push('none')
-            setEditMode(copy)
         })
+        setEditMode(copy)
     }
     function changeState(value, idx) {
         setEditMode(editMode.map((item, index) => {
@@ -75,7 +84,13 @@ export const GradelistPage = () => {
                             textAlign: 'center'
                         }
                     }
-                    }} ref={inputRef} onBlur={() => {changeState('none', index)}}/>) :
+                    }} ref={inputRef} onBlur={() => {
+                        // if (inputRef.current.value !== null || inputRef.current.value !== '') {
+                        //     await handleUpdateSubject(item.id, inputRef.current.value, "TITLECHANGE")
+                        // }
+                        changeState('none', index);
+                    }}
+                    />) :
                     (<Text onClick={() => {changeState('title', index)}} size={"md"}>
                     {item.title}
                     </Text>)
